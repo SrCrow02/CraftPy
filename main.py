@@ -4,6 +4,7 @@ from ursina.prefabs.first_person_controller import FirstPersonController
 app = Ursina()
 
 inventario_aberto = False
+current_block_color = color.white
 
 class Voxel(Button):
     def __init__(self, position=(0, 0, 0)):
@@ -13,7 +14,7 @@ class Voxel(Button):
             model='cube',
             origin_y=.5,
             texture='white_cube',
-            color=color.color(0, 0, random.uniform(.9, 1.0)),
+            color=current_block_color,
             highlight_color=color.blue,
         )
 
@@ -32,6 +33,7 @@ class Inventory(Entity):
 
         self.width = width
         self.height = height
+        self.item_slot = []
 
         for key, value in kwargs.items():
             setattr(self, key, value)
@@ -68,6 +70,11 @@ def close_inventory():
         inventory = None
     inventario_aberto = False
 
+def change_color_block(key, new_color):
+    global current_block_color
+    if held_keys[key]:
+        current_block_color = new_color
+
 def update():
     player_fly()
     global inventario_aberto, inventory  
@@ -77,6 +84,9 @@ def update():
     elif held_keys['q'] and inventario_aberto:
         close_inventory()
         player.enabled = True
+    
+    for i, new_color in enumerate([color.white, color.green, color.red, color.blue, color.yellow, color.black, color.magenta, color.brown]):
+        change_color_block(str(i+1), new_color)
 
 player = FirstPersonController()
 player.speed = 10
