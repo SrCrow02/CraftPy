@@ -37,6 +37,10 @@ class Inventory(Entity):
             setattr(self, key, value)
 
 def input(key):
+    global inventario_aberto
+
+    if inventario_aberto:
+        return 
     if key == 'left mouse down':
         hit_info = raycast(camera.world_position, camera.forward, distance=5)
         if hit_info.hit:
